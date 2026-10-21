@@ -1883,6 +1883,12 @@ retry:
 		if (!ret) {
 			for (opt = form->opts; opt; opt = opt->next) {
 				if (opt->type == OC_FORM_OPT_SSO_TOKEN) {
+					/* GlobalProtect portals expect the SAML token under the
+					 * name of the header it arrived in, not as "passwd". */
+					if (!strcmp(vpninfo->proto->name, "gp") && vpninfo->sso_token_cookie) {
+						free(opt->name);
+						opt->name = strdup(vpninfo->sso_token_cookie);
+					}
 					free(opt->_value);
 					opt->_value = vpninfo->sso_cookie_value;
 					vpninfo->sso_cookie_value = NULL;

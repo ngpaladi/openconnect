@@ -1391,7 +1391,9 @@ int gpst_sso_detect_done(struct openconnect_info *vpninfo,
 			   !strcasecmp(hname, "portal-userauthcookie")) {
 			free(vpninfo->sso_token_cookie);
 			free(vpninfo->sso_cookie_value);
-			vpninfo->sso_token_cookie = strdup(hname);
+			/* Canonical lower-case name: it becomes the form field name */
+			vpninfo->sso_token_cookie = strdup(!strcasecmp(hname, "prelogin-cookie") ?
+							   "prelogin-cookie" : "portal-userauthcookie");
 			vpninfo->sso_cookie_value = strdup(hval);
 		}
 	}
